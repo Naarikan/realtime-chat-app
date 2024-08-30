@@ -22,7 +22,7 @@ namespace RealTimeChatApp.Domain.Entities
        
         public ICollection<Message>? Messages { get; set; }
         public ICollection<User> Users { get; set; } = new HashSet<User>();
-        public ICollection<UserGroupRole> UsersRoles { get; set; }
+        public ICollection<UserGroupRole> UsersGroupRoles { get; set; }
        
     }
 }
