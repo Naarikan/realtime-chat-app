@@ -9,6 +9,17 @@ namespace RealTimeChatApp.Domain.Entities
 {
     public class PrivateChat : EntityBase
     {
+        public PrivateChat()
+        {
+            
+        }
+
+        public PrivateChat(Guid user1Id,Guid user2Id)
+        {
+            User1Id = user1Id;
+            User2Id = user2Id;
+        }
+
         public Guid User1Id { get; set; } 
         public User User1 { get; set; } 
 
