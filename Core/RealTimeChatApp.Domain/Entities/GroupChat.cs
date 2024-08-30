@@ -21,7 +21,6 @@ namespace RealTimeChatApp.Domain.Entities
         public string Name { get; set; }
        
         public ICollection<Message>? Messages { get; set; }
-        public ICollection<User> Users { get; set; } = new HashSet<User>();
         public ICollection<UserGroupRole> UsersGroupRoles { get; set; }
        
     }

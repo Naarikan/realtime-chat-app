@@ -12,7 +12,6 @@ namespace RealTimeChatApp.Persistence.Context
         
         
         public DbSet<GroupChat>  GroupChats {get; set;}
-        public DbSet<PrivateChat> PrivateChats {get; set;}
         public DbSet<Message> Messages {get; set;}
         public DbSet<UserGroupRole> UserGroupRoles {get; set;}
 

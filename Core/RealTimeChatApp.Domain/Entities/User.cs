@@ -22,6 +22,8 @@ namespace RealTimeChatApp.Domain.Entities
         public DateTime? UpdatedDate { get; set; }
         public bool IsDeleted { get; set; }
 
+        
         public ICollection<UserGroupRole> UsersGroupRoles { get; set; }
+       
     }
 }
