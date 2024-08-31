@@ -7,7 +7,15 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Interfaces\" />
+    <ProjectReference Include="..\RealTimeChatApp.Domain\RealTimeChatApp.Domain.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Features\Auth\" />
+    <Folder Include="Features\Messages\" />
+    <Folder Include="Features\GroupChats\" />
+    <Folder Include="Features\UserGroupRoles\" />
+    <Folder Include="Features\Roles\" />
   </ItemGroup>
 
 </Project>
