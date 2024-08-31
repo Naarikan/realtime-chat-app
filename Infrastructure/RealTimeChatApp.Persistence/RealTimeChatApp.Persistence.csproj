@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Core\RealTimeChatApp.Application\RealTimeChatApp.Application.csproj" />
     <ProjectReference Include="..\..\Core\RealTimeChatApp.Domain\RealTimeChatApp.Domain.csproj" />
   </ItemGroup>
 
