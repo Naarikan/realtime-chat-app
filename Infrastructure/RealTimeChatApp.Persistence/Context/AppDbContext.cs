@@ -10,7 +10,6 @@ namespace RealTimeChatApp.Persistence.Context
         public AppDbContext() { }
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
         
-        
         public DbSet<GroupChat>  GroupChats {get; set;}
         public DbSet<Message> Messages {get; set;}
         public DbSet<UserGroupRole> UserGroupRoles {get; set;}
