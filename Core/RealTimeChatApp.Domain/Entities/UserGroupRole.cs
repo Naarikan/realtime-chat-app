@@ -7,11 +7,12 @@ using RealTimeChatApp.Domain.Common;
 
 namespace RealTimeChatApp.Domain.Entities
 {
-    public class UserGroupRole:EntityBase
+    public class UserGroupRole:IEntityBase
     {
         public UserGroupRole()
         {
-            
+            CreatedDate = DateTime.Now;
+            IsDeleted = false;
         }
 
         public UserGroupRole(Guid userId,Guid roleId,Guid groupChatId)
@@ -30,10 +31,8 @@ namespace RealTimeChatApp.Domain.Entities
         public User User { get; set; }
         public Role Role { get; set; }
         public GroupChat GroupChat { get; set; }
-
-
-        
-        
-
+        public DateTime CreatedDate { get; set; }
+        public DateTime? UpdatedDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }
