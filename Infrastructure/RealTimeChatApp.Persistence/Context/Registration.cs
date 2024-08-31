@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using RealTimeChatApp.Application.Interfaces.Repositories;
 using RealTimeChatApp.Domain.Entities;
+using RealTimeChatApp.Persistence.Repositories;
 
 namespace RealTimeChatApp.Persistence.Context
 {
@@ -17,7 +19,8 @@ namespace RealTimeChatApp.Persistence.Context
             services.AddDbContext<AppDbContext>(opt => opt.UseSqlServer(_configuration.GetConnectionString("DefaultConnection")));
 
 
-
+            services.AddScoped(typeof(IReadRepository<>), typeof(ReadRepository<>));
+            services.AddScoped(typeof(IWriteRepository<>), typeof(WriteRepository<>));
 
 
 
