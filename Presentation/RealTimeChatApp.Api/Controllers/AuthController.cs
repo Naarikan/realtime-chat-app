@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
+using RealTimeChatApp.Application.Features.Auth.Command.Login;
 using RealTimeChatApp.Application.Features.Auth.Command.Register;
 
 namespace RealTimeChatApp.Api.Controllers
@@ -24,6 +25,15 @@ namespace RealTimeChatApp.Api.Controllers
             return StatusCode(StatusCodes.Status201Created);
 
         }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginCommandRequest request)
+        {
+            var response= await mediator.Send(request);
+            return Ok(response);
+        }
+
 
     }
 }

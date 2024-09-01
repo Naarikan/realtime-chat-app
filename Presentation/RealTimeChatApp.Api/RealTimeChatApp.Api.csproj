@@ -16,6 +16,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\Core\RealTimeChatApp.AutoMapper\RealTimeChatApp.AutoMapper.csproj" />
+    <ProjectReference Include="..\..\Infrastructure\RealTimeChatApp.Infrastructure\RealTimeChatApp.Infrastructure.csproj" />
     <ProjectReference Include="..\..\Infrastructure\RealTimeChatApp.Persistence\RealTimeChatApp.Persistence.csproj" />
   </ItemGroup>
 
