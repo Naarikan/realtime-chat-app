@@ -32,7 +32,7 @@ namespace RealTimeChatApp.Infrastructure
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JWT:Secret"])),
                     ValidateLifetime = false,
                     ValidIssuer = configuration["JWT:Issuer"],
-                    ValidAudience = configuration["Jwt:Audience"],
+                    ValidAudience = configuration["JWT:Audience"],
                     ClockSkew = TimeSpan.Zero
                 };
 
