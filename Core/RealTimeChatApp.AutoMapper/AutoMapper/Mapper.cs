@@ -3,7 +3,7 @@ using AutoMapper;
 
 namespace RealTimeChatApp.AutoMapper.AutoMapper
 {
-    public class AutoMapper:Application.Interfaces.AutoMapper.IMapper
+    public class Mapper:Application.Interfaces.AutoMapper.IMapper
     {
         public static List<TypePair> typePairs = new();
         private IMapper MapperContainer;

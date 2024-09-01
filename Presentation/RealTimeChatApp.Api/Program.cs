@@ -1,5 +1,6 @@
 using RealTimeChatApp.Persistence.Context;
 using RealTimeChatApp.AutoMapper;
+using RealTimeChatApp.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddPersistence(builder.Configuration);
 builder.Services.AddCustomMapper();
+builder.Services.AddApplication();
+
+
+
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
