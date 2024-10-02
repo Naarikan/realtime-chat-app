@@ -1,0 +1,300 @@
+﻿@page "/login"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using RealTimeChatApp.UI.Provider
+@layout LoginLayout
+@inject IAuth _auth;
+@inject IStorage _storage;
+@inject AuthenticationStateProvider _autprovider;
+@inject NavigationManager _navigation;
+@inject ApiService apiService;
+
+
+<style>
+    /* Login sayfası için özel stiller */
+    .login-page-body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    .login-form h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Login formu stili */
+    .login-form {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+
+    .error-message {
+        color: red;
+        text-align: center;
+        margin-top: 10px;
+    }
+</style>
+
+<body class="login-page-body">
+    <div class="login-form">
+        <h3>Login</h3>
+
+        @if (!string.IsNullOrEmpty(errorMessage))
+        {
+            <div class="error-message">@errorMessage</div>
+        }
+
+        <form @onsubmit="OnLogin">
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input id="username" class="form-control" type="text" @bind="loginRequest.Email" placeholder="Enter your username" />
+            </div>
+
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input id="password" class="form-control" type="password" @bind="loginRequest.Password" placeholder="Enter your password" />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Login</button>
+        </form>
+    </div>
+</body>
+
+@code {
+    private LoginRequest loginRequest = new LoginRequest();
+    private LoginResponse loginResponse;
+    private string errorMessage;
+
+   
+
+    private async Task OnLogin()
+    {
+        try
+        {
+            // Kullanıcıdan alınan giriş bilgileriyle bir API isteği gönderiliyor
+            loginResponse = await apiService.PostAsync<LoginRequest, LoginResponse>("api/auth/login", loginRequest);
+
+            if (loginResponse == null || string.IsNullOrEmpty(loginResponse.Token))
+            {
+                errorMessage = "Invalid login attempt. Please check your email and password.";
+            }
+            else
+            {
+                errorMessage = null;
+
+                // Kullanıcıyı kimlik doğrulama için kaydet
+                await _storage.SetLocalStorage("JwtToken", loginResponse.Token);
+
+                // Authentication state provider'a kullanıcı kimliği bilgisini bildir
+                ((CustomAuthStateProvider)_autprovider).NotifyUserAuthentication();
+
+                // Ana sayfaya yönlendir
+                _navigation.NavigateTo("/", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Error: {ex.Message}";
+            Console.WriteLine($"Error: {ex.Message}");
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* @page "/login"
+@using Microsoft.AspNetCore.Components.Authorization
+@using RealTimeChatApp.UI.Provider
+@layout LoginLayout
+@inject IAuth _auth;
+@inject IStorage _storage;
+@inject AuthenticationStateProvider _autprovider;
+@inject NavigationManager _navigation;
+@inject ApiService apiService;
+
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f8f9fa;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+    }
+
+    h3 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Login formu stili */
+    .login-form {
+        max-width: 400px;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        background-color: #fff;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+    .btn-primary {
+        width: 100%;
+        padding: 10px;
+        border: none;
+        border-radius: 4px;
+        background-color: #007bff;
+        color: #fff;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+</style>
+
+
+<h3>Login</h3>
+
+<div class="login-form">
+    <form>
+        <div class="form-group">
+            <label for="username">Username:</label>
+            <input id="username" class="form-control" type="text" placeholder="Enter your username" />
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password:</label>
+            <input id="password" class="form-control" type="password" placeholder="Enter your password" />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Login</button>
+    </form>
+</div>
+@code {
+    private LoginRequest loginRequest = new LoginRequest();
+    private LoginResponse loginResponse;
+    private string errorMessage;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await _auth.CheckAuthBeforeRequests();
+    }
+
+
+    private async Task OnLogin(LoginArgs login)
+    {
+        try
+        {
+            loginRequest.Email = args.Username;
+            loginRequest.Password = args.Password;
+
+            loginResponse = await apiService.PostAsync
+
+            if (loginResponse == null || string.IsNullOrEmpty(loginResponse.Token))
+            {
+                errorMessage = "Invalid login attempt. Please check your email and password.";
+
+            }
+            else
+            {
+                errorMessage = null;
+                await _storage.SetLocalStorage("JwtToken", loginResponse.Token);
+
+
+                ((CustomAuthStateProvider)_autprovider).NotifyUserAuthentication();
+
+
+                _navigation.NavigateTo("/", true);
+            }
+        }
+        catch (Exception ex)
+        {
+            errorMessage = $"Hata: {ex.Message}";
+            Console.WriteLine($"Hata: {ex.Message}");
+        }
+    }
+}
+ *@

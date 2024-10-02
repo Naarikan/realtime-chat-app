@@ -1,0 +1,74 @@
+﻿@page "/create-group"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@attribute [Authorize]
+@inject IAuth auth;
+@inject IStorage storage;
+@inject AuthenticationStateProvider authStateProvider;
+@inject ApiService apiService;
+@inject NavigationManager navigation;
+
+<br />
+<h2>Create Group</h2>
+
+<div class="input-container">
+    <input type="text" @bind=" newGroup" placeholder="Group Name" />
+    <button @onclick="CreateGroup">Send</button>
+</div>
+
+
+
+@code {
+    private Guid UserId { get; set; }
+
+    private string newGroup { get; set; } = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        await auth.CheckAuthBeforeRequests();
+    }
+
+    private async Task<Guid> GetIdAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+        var claims = user.Claims.ToList();
+
+
+        UserId = storage.GetUserId(claims);
+
+        return UserId;
+    }
+
+
+    public async Task CreateGroup()
+    {
+        var id = await GetIdAsync();
+
+        if (string.IsNullOrWhiteSpace(newGroup))
+        {
+            return;
+        }
+
+        var request = new CreateGroup
+            {
+                Name=newGroup,
+                UserId = id,
+
+            };
+
+        try
+        {
+            await apiService.PostAsync<CreateGroup>("api/groupchat/create-groupchat", request);
+            newGroup= string.Empty;
+            navigation.NavigateTo("/");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending message: {ex.Message}");
+        }
+    }
+}

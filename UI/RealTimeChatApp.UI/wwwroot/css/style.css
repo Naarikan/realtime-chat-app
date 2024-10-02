@@ -1,0 +1,76 @@
+﻿
+.message-container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+    max-height: 800px;
+    overflow-y: auto;
+}
+
+.message-card {
+    display: flex;
+    gap: 10px;
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+    .message-card img.avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+.message-content {
+    max-width: 80%;
+}
+
+    .message-content strong {
+        display: block;
+        font-weight: bold;
+    }
+
+    .message-content p {
+        margin: 5px 0;
+    }
+
+.input-container {
+    display: flex;
+    gap: 10px;
+    position: fixed; /* Kutuyu sabitler */
+    bottom: 0; /* Sayfanın altına yapıştırır */
+    left: 55%; /* Yatayda ortalar */
+    transform: translateX(-50%); /* Ortalamayı tamamlar */
+    width: 80%; /* Genişliğini ayarlar */
+    padding: 10px;
+    background-color: #fff; /* Arka plan rengi */
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1); /* Üst kısımda gölge */
+    border-top: 1px solid #ddd; /* Üst kenarlık */
+    padding-bottom:20px;
+    z-index: 100; /* Diğer elemanların önünde görünmesini sağlar */
+}
+
+    .input-container input {
+        flex: 1; /* Esnek genişlik sağlar */
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+
+    .input-container button {
+        padding: 10px 20px;
+        background-color: #007bff; /* Butonun arka plan rengi */
+        color: #fff; /* Yazı rengi */
+        border: none; /* Kenarlık yok */
+        border-radius: 5px; /* Köşe yuvarlaklığı */
+        cursor: pointer; /* Fare imleci */
+        font-size: 16px;
+        transition: background-color 0.3s; /* Arka plan rengi geçişi */
+    }
+
+        .input-container button:hover {
+            background-color: #0056b3; /* Hover durumunda arka plan rengi */
+        }

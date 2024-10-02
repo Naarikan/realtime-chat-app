@@ -10,12 +10,11 @@ namespace RealTimeChatApp.Domain.Entities
             
         }
 
-        public Message(string content,Guid userId,ChatStatus status,Guid? groupChatId)
+        public Message(string content,Guid userId,Guid? groupChatId)
         {
             Content = content;
             UserId = userId;
-            ChatStatus = status;
-            
+           
             GroupChatId = groupChatId;
         }
        
@@ -24,7 +23,7 @@ namespace RealTimeChatApp.Domain.Entities
         public Guid UserId { get; set; }//-->sender ıd
         public User User { get; set; }//--> sender
 
-        ChatStatus ChatStatus { get; set; }
+        ChatStatus? ChatStatus { get; set; }
 
 
         public Guid? GroupChatId { get; set; }

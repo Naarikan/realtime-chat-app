@@ -1,0 +1,47 @@
+﻿@page "/create-invite/{GroupId:guid}"
+@inject ApiService service;
+
+
+
+<div class="container">
+    <div class="form-group">
+        <label for="maxUsage">Max Usage:</label>
+        <input type="number" id="maxUsage" class="form-control" placeholder="Max Usage" @bind="MaxUsage" />
+    </div>
+    <br />
+    <button class="btn btn-primary" @onclick="GenerateInviteCode">Create Code</button>
+
+    <br /><br />
+    @if (!string.IsNullOrEmpty(EncryptedCode))
+    {
+        <h2>Invite Code</h2>
+        <div class="mt-2">
+            <input type="text" class="form-control" value="@EncryptedCode" readonly />
+        </div>
+    }
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid GroupId { get; set; }
+
+    private CreateCodeRequest request = new();
+
+    private CreateCodeResponse response = new();
+
+    public string EncryptedCode { get; set; } = string.Empty;
+    public int MaxUsage { get; set; }
+
+
+    private async Task GenerateInviteCode()
+    {
+        request.GroupId = GroupId;
+        request.maxUsage = MaxUsage;
+
+        response = await service.PostAsync<CreateCodeRequest, CreateCodeResponse>("api/groupchat/create-invite-code", request);
+
+        EncryptedCode = response.EncryptedCode;
+    }
+
+}

@@ -1,0 +1,141 @@
+﻿@page "/messages/{GroupId:guid}"
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@inject ApiService apiService
+@inject SignalRService signalR
+@inject IAuth auth
+@inject IStorage storage
+@attribute [Authorize]
+@inject AuthenticationStateProvider authStateProvider
+
+@if (messages == null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <div class="message-container">
+        @foreach (var item in messages)
+        {
+            <div class="message-card">
+                <img src="https://via.placeholder.com/40" alt="User Avatar" class="avatar" />
+                <div class="message-content">
+                    <strong>@item.UserName</strong>
+                    <strong>@item.CreatedDate.ToString("g")</strong>
+                    <p>@item.Content</p>
+                </div>
+            </div>
+        }
+    </div>
+}
+<a href="/create-invite/@GroupId" class="btn btn-primary">Kod Oluştur</a>
+<a href="/add-user-to-group/@GroupId" class="btn btn-primary">Kullanıcı Davet Et</a>
+<a href="/member-list/@GroupId">Kullanıcı Listesi</a>
+<br />
+<div class="input-container">
+    <input type="text" @bind="newMessageContent" placeholder="Enter your message" />
+    <button @onclick="SendMessage">Send</button>
+</div>
+
+
+
+
+
+@code {
+    [Parameter]
+    public Guid GroupId { get; set; }
+
+    private HubConnection? hubConnection;
+    public IList<Message> messages { get; set; } = new List<Message>();
+    private string newMessageContent { get; set; } = string.Empty;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await InitializeAsync();
+    }
+
+    private async Task InitializeAsync()
+    {
+        await auth.CheckAuthBeforeRequests();
+
+        // Var olan bağlantıyı temizle
+        if (hubConnection != null)
+        {
+            await hubConnection.SendAsync("LeaveGroup", GroupId.ToString());
+            await hubConnection.DisposeAsync();
+        }
+
+        // Hub bağlantısını oluştur ve gruba katıl
+        hubConnection = signalR.ConnectHub("https://localhost:7274/chatHub");
+        hubConnection.On<SendMessageModel>("ReceiveMessage", (message) =>
+        {
+            if (message.GroupChatId == GroupId.ToString())
+            {
+                messages.Add(new Message
+                    {
+                        Content = message.Content,
+                        CreatedDate = message.Date,
+                        UserName = message.UserName
+                    });
+                InvokeAsync(StateHasChanged);
+            }
+        });
+
+        await GetList();
+
+        await hubConnection.StartAsync();
+
+       
+        await hubConnection.SendAsync("JoinGroup", GroupId.ToString());
+    }
+
+    private async Task GetList()
+    {
+        messages = await apiService.GetAsync<List<Message>>($"api/message/group/{GroupId}");
+    }
+
+    private async Task SendMessage()
+    {
+        if (string.IsNullOrWhiteSpace(newMessageContent))
+        {
+            return;
+        }
+
+        var id = await GetIdAsync();
+
+        var request = new CreateMessage
+            {
+                Content = newMessageContent,
+                UserId = id,
+                GroupChatId = GroupId
+            };
+
+        try
+        {
+            await apiService.PostAsync<CreateMessage>("api/message/create-message", request);
+            newMessageContent = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error sending message: {ex.Message}");
+        }
+    }
+
+    private async Task<Guid> GetIdAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var claims = user.Claims.ToList();
+        return storage.GetUserId(claims);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.SendAsync("LeaveGroup", GroupId.ToString());
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

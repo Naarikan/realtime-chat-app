@@ -9,6 +9,7 @@ using FluentValidation;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 using RealTimeChatApp.Application.Beheviors;
+using RealTimeChatApp.Application.Encryption;
 
 namespace RealTimeChatApp.Application
 {
@@ -16,7 +17,13 @@ namespace RealTimeChatApp.Application
     {
         public static void AddApplication(this IServiceCollection services) {
 
+           
+
             var assembly = Assembly.GetExecutingAssembly();
+
+            services.AddSignalR();
+
+            services.AddSingleton<InviteCodeManager>();
 
             services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(assembly));
 

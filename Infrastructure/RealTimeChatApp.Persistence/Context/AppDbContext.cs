@@ -14,6 +14,8 @@ namespace RealTimeChatApp.Persistence.Context
         public DbSet<Message> Messages {get; set;}
         public DbSet<UserGroupRole> UserGroupRoles {get; set;}
 
+        public DbSet<InviteCode> InviteCodes {get; set;}
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

@@ -15,7 +15,7 @@ namespace RealTimeChatApp.Domain.Entities
         }
         public GroupChat(string name)
         {
-            
+            Name = name;
         }
 
         public string Name { get; set; }
