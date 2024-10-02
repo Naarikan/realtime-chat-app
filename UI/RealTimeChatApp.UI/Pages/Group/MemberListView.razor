@@ -1,0 +1,142 @@
+﻿@page "/member-list/{GroupId:guid}"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject ApiService service;
+@inject AuthenticationStateProvider authStateProvider;
+@inject IStorage storage;
+@inject IJSRuntime JS;
+
+<h3>Member List View</h3>
+
+@if (MemberList is null)
+{
+    <h1>Loading...</h1>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>UserName</th>
+                <th>Role</th>
+                @if (roleResponse is not null && roleResponse.Name == "admin")
+                {
+                    <th>Role Change</th>
+                    <th>Kick Out</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in MemberList)
+            {
+                <tr>
+                    <td>@item.User.UserName</td>
+                    <td>@item.Role.Name</td>
+                    @if (roleResponse is not null && roleResponse.Name == "admin")
+                    {
+                        <td>
+                            <select value="@item.Role.Name" @onchange="(e) => OnRoleChange(item, e.Value.ToString())" class="form-select">
+                                <option value="admin" selected="@((item.Role.Name == "admin") ? "selected" : null)">admin</option>
+                                <option value="member" selected="@((item.Role.Name == "member") ? "selected" : null)">member</option>
+                            </select>
+                        </td>
+
+                        <td> <button class="btn btn-danger" @onclick="() => Kick(item.User.Id)">Kick Out</button></td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code
+{
+    [Parameter]
+    public Guid GroupId { get; set; }
+
+    public IList<Members> MemberList;
+
+    public Guid UserId { get; set; }
+
+    private GetUserRoleResponse? roleResponse;
+
+   
+    private string previousRole;
+
+    protected override async Task OnInitializedAsync()
+    {
+        MemberList = await service.GetAsync<List<Members>>($"api/usergrouprole/get-members/{GroupId}");
+
+        await GetIdAsync();
+
+        await GetUserRole();
+    }
+
+    public async Task GetUserRole()
+    {
+        roleResponse = await service.GetAsync<GetUserRoleResponse>($"api/usergrouprole/get-user-role/{UserId}/{GroupId}");
+    }
+
+    private async Task<Guid> GetIdAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+        var claims = user.Claims.ToList();
+
+        UserId = storage.GetUserId(claims);
+
+        return UserId;
+    }
+
+    
+    private async Task OnRoleChange(Members member, string newRole)
+    {
+      
+        previousRole = member.Role.Name;
+
+       
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Kullanıcının rolünü değiştirmek istediğinize emin misiniz?");
+        if (confirmed)
+        {
+            
+            await ChangeRole(member.User.Id, newRole);
+        }
+        else
+        {
+            
+            member.Role.Name = previousRole;
+        }
+    }
+
+   
+    private async Task ChangeRole(Guid targetUserId, string newRole)
+    {
+        var changeRoleRequest = new ChangeRoleRequest
+        {
+            UserId = targetUserId,
+            GroupId = GroupId,
+            NewRoleName = newRole
+        };
+
+        await service.PostAsync("api/usergrouprole/change-user-role", changeRoleRequest);
+
+        MemberList = await service.GetAsync<List<Members>>($"api/usergrouprole/get-members/{GroupId}");
+    }
+
+    public async Task Kick(Guid targetUserId)
+    
+    {
+        var confirmed = await JS.InvokeAsync<bool>("confirm", "Kullanıcıyı gruptan çıkarmak istediğinize emin misiniz?");
+        if (confirmed)
+        {
+            var removeRequest = new RemoveUserFromGroup
+                {
+                    UserId = targetUserId,
+                    GroupId = GroupId
+                };
+            await service.PostAsync("api/usergrouprole/remove-user-from-group", removeRequest);
+            MemberList = await service.GetAsync<List<Members>>($"api/usergrouprole/get-members/{GroupId}");
+        }
+    
+    }
+}

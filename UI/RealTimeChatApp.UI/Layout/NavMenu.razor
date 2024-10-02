@@ -1,0 +1,91 @@
+﻿@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
+@using Microsoft.AspNetCore.SignalR.Client
+@inject ApiService service
+@inject SignalRService signalR
+@inject IAuth auth;
+@inject IStorage storage;
+@attribute [Authorize]
+@inject AuthenticationStateProvider authStateProvider;
+
+
+
+
+<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">RealTimeChatApp.UI</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+
+<div class="@NavMenuCssClass nav-scrollable" @onclick="ToggleNavMenu">
+    <nav class="flex-column">
+         @foreach(var item in groups){
+        <div class="nav-item px-3">
+                <NavLink class="nav-link" href=@($"/messages/{item.GroupChat.Id}") Match="NavLinkMatch.All">
+                <span class="bi bi-house-door-fill-nav-menu" aria-hidden="true"></span> @item.GroupChat.Name
+            </NavLink>
+        </div>
+         }
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/create-group">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Create Group
+            </NavLink>
+        </div>
+
+         <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/join-group">
+                <span class="bi bi-plus-square-fill-nav-menu" aria-hidden="true"></span> Join Group
+            </NavLink>
+        </div>
+    </nav>
+</div>
+
+@code {
+
+    public IList<GetGroupsByUserIdResponse> groups { get; set; } = new List<GetGroupsByUserIdResponse>();
+    private Guid UserId { get; set; } = Guid.Empty;
+
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetIdAsync();
+            groups = await service.GetAsync<List<GetGroupsByUserIdResponse>>($"api/message/grouproleuser/{UserId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading groups: {ex.Message}");
+        }
+    }
+
+
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    private async Task<Guid> GetIdAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+
+
+        var claims = user.Claims.ToList();
+
+
+        UserId = storage.GetUserId(claims);
+
+        return UserId;
+    }
+
+}

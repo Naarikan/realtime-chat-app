@@ -1,0 +1,48 @@
+﻿@page "/join-group"
+@using Microsoft.AspNetCore.Components.Authorization
+@inject ApiService service;
+@inject AuthenticationStateProvider authStateProvider
+@inject IStorage storage;
+
+
+
+<div class="container">
+    <h3>Join Group</h3>
+
+    <div class="form-group">
+        <input type="text" id="encryptedCode" class="form-control" placeholder="Enter The Invite Code" @bind="EncryptedCode" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="JoinGroup">Join Group</button>
+</div>
+
+
+
+@code {
+    private JoinGroupRequest request = new();
+    private Guid UserId { get; set; } = Guid.Empty;
+    private string EncryptedCode { get; set; } = string.Empty;
+
+
+
+    private async Task JoinGroup()
+    {
+        request.EncryptedCode = EncryptedCode;
+        UserId = await GetIdAsync();
+        request.UserId = UserId;
+        await service.PostAsync<JoinGroupRequest>("api/groupchat/add-user-to-group", request);
+    }
+
+
+
+
+
+    private async Task<Guid> GetIdAsync()
+    {
+        var authState = await authStateProvider.GetAuthenticationStateAsync();
+        var user = authState.User;
+        var claims = user.Claims.ToList();
+        return storage.GetUserId(claims);
+    }
+
+}

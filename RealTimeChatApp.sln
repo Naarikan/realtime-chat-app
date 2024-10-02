@@ -19,7 +19,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTimeChatApp.Persistence
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTimeChatApp.Api", "Presentation\RealTimeChatApp.Api\RealTimeChatApp.Api.csproj", "{61FFC3BA-7437-4EFC-98E9-3CB88A2D2F8C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RealTimeChatApp.AutoMapper", "Core\RealTimeChatApp.AutoMapper\RealTimeChatApp.AutoMapper.csproj", "{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTimeChatApp.AutoMapper", "Core\RealTimeChatApp.AutoMapper\RealTimeChatApp.AutoMapper.csproj", "{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{057691B8-C81E-402D-BFBC-1A7D27111F5D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RealTimeChatApp.UI", "UI\RealTimeChatApp.UI\RealTimeChatApp.UI.csproj", "{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -51,6 +55,10 @@ Global
 		{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -62,6 +70,7 @@ Global
 		{60742089-79BC-4009-BD42-6DC8245C7615} = {401BAB50-C31F-4771-AEB1-1D0F799512FE}
 		{61FFC3BA-7437-4EFC-98E9-3CB88A2D2F8C} = {4015122C-2224-4B21-8A5C-BD1BED067EE9}
 		{E4A4B5DE-44CB-42F7-B195-52D5E938B0B3} = {A7376DF5-A156-4256-A7BF-AA9228155629}
+		{345C6A5B-3F0E-41FD-9A71-D2B17D3ACD84} = {057691B8-C81E-402D-BFBC-1A7D27111F5D}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1D6C5D24-B4EE-4754-A1DB-6F0DEB4D3B0F}

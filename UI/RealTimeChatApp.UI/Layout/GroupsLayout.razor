@@ -1,0 +1,73 @@
+﻿@inherits LayoutComponentBase
+@inject ApiService service
+
+<head>
+     
+            <title>W3.CSS</title>
+            <meta name="viewport" content="width=device-width, initial-scale=1">
+            <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+
+<div class="layout">
+    <div class="sidebar">
+        
+       
+           
+           
+            <body>
+
+                @foreach(var item in groups){
+                <div class="w3-sidebar w3-bar-block w3-collapse w3-card w3-animate-right" style="width:200px;right:0;" id="mySidebar">
+                    <button class="w3-bar-item w3-button w3-large w3-hide-large" onclick="w3_close()">Close &times;</button>
+                    <a href="#" class="w3-bar-item w3-button">@item.GroupChat.Name</a>
+                </div>
+                }
+                <div class="w3-main" style="margin-right:200px">
+                    <div class="w3-teal">
+                        <button class="w3-button w3-teal w3-xlarge w3-right w3-hide-large" onclick="w3_open()">&#9776;</button>
+                        <div class="w3-container">
+                            <h1>My Page</h1>
+                        </div>
+                    </div>
+
+                    <div class="w3-container">
+                        @Body
+                    </div>
+
+                </div>
+
+                <script>
+                    function w3_open() {
+                      document.getElementById("mySidebar").style.display = "block";
+                    }
+
+                    function w3_close() {
+                      document.getElementById("mySidebar").style.display = "none";
+                    }
+                </script>
+
+            </body>
+        
+    </div>
+
+</div>
+
+
+
+@code {
+    public IList<GetGroupsByUserIdResponse> groups { get; set; } = new List<GetGroupsByUserIdResponse>();
+    private readonly Guid userId = Guid.Parse("71A387A8-30AB-41A5-C2CA-08DCCA8E74FF");
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            groups = await service.GetAsync<List<GetGroupsByUserIdResponse>>($"api/message/grouproleuser/{userId}");
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error loading groups: {ex.Message}");
+        }
+    }
+
+}

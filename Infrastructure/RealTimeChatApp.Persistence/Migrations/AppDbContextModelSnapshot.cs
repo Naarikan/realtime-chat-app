@@ -149,6 +149,33 @@ namespace RealTimeChatApp.Persistence.Migrations
                     b.ToTable("GroupChats");
                 });
 
+            modelBuilder.Entity("RealTimeChatApp.Domain.Entities.InviteCode", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("EncryptedCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<int>("MaxUsage")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime?>("UpdatedDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("InviteCodes");
+                });
+
             modelBuilder.Entity("RealTimeChatApp.Domain.Entities.Message", b =>
                 {
                     b.Property<Guid>("Id")
@@ -306,9 +333,6 @@ namespace RealTimeChatApp.Persistence.Migrations
                     b.Property<Guid>("UserId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<Guid>("RoleId")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<Guid>("GroupChatId")
                         .HasColumnType("uniqueidentifier");
 
@@ -318,10 +342,13 @@ namespace RealTimeChatApp.Persistence.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
+                    b.Property<Guid>("RoleId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<DateTime?>("UpdatedDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("UserId", "RoleId", "GroupChatId");
+                    b.HasKey("UserId", "GroupChatId");
 
                     b.HasIndex("GroupChatId");
 
@@ -409,7 +436,7 @@ namespace RealTimeChatApp.Persistence.Migrations
                     b.HasOne("RealTimeChatApp.Domain.Entities.Role", "Role")
                         .WithMany("UsersGroupRoles")
                         .HasForeignKey("RoleId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.HasOne("RealTimeChatApp.Domain.Entities.User", "User")

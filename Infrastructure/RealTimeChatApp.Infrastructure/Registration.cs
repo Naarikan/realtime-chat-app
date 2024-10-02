@@ -3,7 +3,9 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+
 using RealTimeChatApp.Application.Interfaces.Tokens;
+using RealTimeChatApp.Infrastructure.SignalR;
 using RealTimeChatApp.Infrastructure.Tokens;
 
 namespace RealTimeChatApp.Infrastructure
@@ -14,6 +16,9 @@ namespace RealTimeChatApp.Infrastructure
         {
             services.Configure<TokenSettings>(configuration.GetSection("JWT"));//Options.ConfigurationExtensions kütüphanesi olmalı
             services.AddTransient<ITokenService, TokenService>();
+
+          
+           
 
             services.AddAuthentication(opt =>
             {

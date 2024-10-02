@@ -27,7 +27,7 @@ namespace RealTimeChatApp.Infrastructure.Tokens
             {
                 new Claim(JwtRegisteredClaimNames.Jti ,Guid.NewGuid().ToString()),
                 new Claim(ClaimTypes.NameIdentifier , user.Id.ToString()),
-                new Claim(JwtRegisteredClaimNames.Email , user.UserName)
+                new Claim(JwtRegisteredClaimNames.Email , user.Email)
             };
 
             //foreach (var role in roles)

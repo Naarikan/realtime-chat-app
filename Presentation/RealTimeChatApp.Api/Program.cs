@@ -2,6 +2,7 @@ using RealTimeChatApp.Persistence.Context;
 using RealTimeChatApp.AutoMapper;
 using RealTimeChatApp.Application;
 using RealTimeChatApp.Infrastructure;
+using RealTimeChatApp.Infrastructure.SignalR;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -18,6 +19,18 @@ builder.Services.AddCustomMapper();
 builder.Services.AddApplication();
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins",
+        builder =>
+        {
+            builder.WithOrigins("https://localhost:7186")
+                   .AllowAnyHeader()
+                   .AllowAnyMethod();
+        });
+});
+
+
 
 builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
@@ -32,8 +45,17 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+app.UseCors("AllowAllOrigins");
+app.UseAuthentication();
+
 app.UseAuthorization();
 
+
+
 app.MapControllers();
+
+
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

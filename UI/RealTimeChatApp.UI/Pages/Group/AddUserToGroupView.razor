@@ -1,0 +1,33 @@
+﻿@page "/add-user-to-group/{GroupId:guid}"
+@inject ApiService service;
+
+
+<div class="container">
+    <h3>Join Group</h3>
+
+    <div class="form-group">
+        <input type="text" id="encryptedCode" class="form-control" placeholder="Enter The USer Mail" @bind="Email" />
+    </div>
+
+    <button class="btn btn-primary" @onclick="AddUserToGroup">Join Group</button>
+</div>
+
+
+@code {
+    [Parameter]
+    public Guid GroupId { get; set; }
+
+    private string Email { get; set; } = string.Empty;
+
+    AddUserToGroupRequest request = new();
+
+
+    private async Task AddUserToGroup()
+    {
+        request.Email = Email;
+        request.GroupChatId = GroupId;
+
+        await service.PostAsync<AddUserToGroupRequest>("api/groupchat/add-one-user-to-group", request);
+    }
+
+}
